@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1d4ed8">
+  <link rel="icon" type="image/png" sizes="192x192" href="logo.png">
+  <link rel="apple-touch-icon" href="logo.png">
+
   <title>Cairo University CS Batch 2029</title>
 
   <!-- TailwindCSS -->
@@ -282,6 +287,15 @@
     }
 
     loadAllData();
+   
+    if ("serviceWorker" in navigator) {
+       navigator.serviceWorker.register("sw.js")
+      .then(() => console.log("Service Worker registered"))
+      .catch(err => console.log("SW registration failed:", err));
+     }
+  
+
   </script>
 </body>
 </html>
+
