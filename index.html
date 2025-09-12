@@ -21,8 +21,7 @@
     body.dark nav { background: #0f172a; }
     body.dark footer { background: #0f172a; color: #cbd5e1; }
     body.dark .tab-btn { color: #cbd5e1; }
-    body.dark .tab-btn.border-blue-600 {
-      border-color: #38bdf8;
+    body.dark .tab-btn.active {
       color: #38bdf8;
     }
     body.dark .news-card,
@@ -45,6 +44,42 @@
       color: #0f172a;
       font-weight: bold;
     }
+
+    /* ✨ Transition Animations بين Light / Dark */
+    body, nav, footer, .news-card, table, th, td, input {
+      transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+    }
+
+    /* ✨ Buttons Hover Animations */
+    button, a {
+      transition: all 0.3s ease;
+    }
+    button:hover, a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+
+    /* ✨ Tabs Underline Animation */
+    .tab-btn {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .tab-btn::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -2px;
+      width: 0%;
+      height: 2px;
+      background: #2563eb; /* الأزرق */
+      transition: width 0.3s ease;
+    }
+    .tab-btn:hover::after {
+      width: 100%;
+    }
+    .tab-btn.active::after {
+      width: 100%;
+    }
   </style>
 </head>
 <body class="bg-gray-50 font-sans transition-colors duration-500">
@@ -54,8 +89,8 @@
     <div class="container mx-auto flex justify-between items-center p-4">
       <h1 id="siteTitle" class="text-2xl font-bold">CMP Cairo University - Batch 2029</h1>
       <div class="flex space-x-2">
-        <button id="langToggle" class="bg-white text-blue-600 px-3 py-1 rounded-lg shadow-md hover:bg-gray-200">🌐 عربي</button>
-        <button id="darkToggle" class="bg-white text-blue-600 px-3 py-1 rounded-lg shadow-md hover:bg-gray-200">🌙 Dark Mode</button>
+        <button id="langToggle" class="bg-white text-blue-600 px-3 py-1 rounded-lg shadow-md">🌐 عربي</button>
+        <button id="darkToggle" class="bg-white text-blue-600 px-3 py-1 rounded-lg shadow-md">🌙 Dark Mode</button>
       </div>
     </div>
   </nav>
@@ -63,16 +98,16 @@
   <!-- Hero Section -->
   <section class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20">
     <div class="container mx-auto text-center">
-      <h2 id="heroTitle" class="text-4xl font-extrabold mb-4">Welcome to Batch 2029 Website</h2>
+      <h2 id="heroTitle" class="text-4xl font-extrabold mb-4">Welcome to CMP Batch 2029 Website</h2>
       <p id="heroDesc" class="text-lg mb-6">Stay updated with the latest news, schedules, and deadlines of our batch</p>
-      <a href="#news" id="heroBtn" class="bg-white text-blue-700 px-6 py-3 rounded-full font-semibold hover:bg-gray-200 shadow-md transition">Explore Now</a>
+      <a href="#news" id="heroBtn" class="bg-white text-blue-700 px-6 py-3 rounded-full font-semibold shadow-md transition">Explore Now</a>
     </div>
   </section>
 
   <!-- Tabs -->
   <div class="container mx-auto mt-10">
     <div class="flex border-b border-gray-300 justify-center space-x-4">
-      <button class="tab-btn px-4 py-2 text-blue-600 font-semibold border-b-2 border-blue-600" data-tab="news" id="tabNews">News</button>
+      <button class="tab-btn active px-4 py-2 text-blue-600 font-semibold" data-tab="news" id="tabNews">News</button>
       <button class="tab-btn px-4 py-2 text-gray-600 hover:text-blue-600" data-tab="schedule" id="tabSchedule">Today's Schedule</button>
       <button class="tab-btn px-4 py-2 text-gray-600 hover:text-blue-600" data-tab="deadlines" id="tabDeadlines">Deadlines</button>
     </div>
@@ -131,8 +166,8 @@
   <script>
     // ========= Sheet IDs =========
     const sheetIDs = {
-      en: "1rhIC3O9J06LEGJElaaXrp9U3k1BTlszALeaw9PZP0vo", // الإنجليزي
-      ar: "1BF9-_-zzHZMBWOdYDRN7-GF9GLPX1DP9iwTD58JTQPo" // العربي
+      en: "1rhIC3O9J06LEGJElaaXrp9U3k1BTlszALeaw9PZP0vo",
+      ar: "1BF9-_-zzHZMBWOdYDRN7-GF9GLPX1DP9iwTD58JTQPo"
     };
 
     let currentLang = "en";
@@ -143,8 +178,8 @@
     const contents = document.querySelectorAll(".tab-content");
     tabs.forEach(tab => {
       tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("text-blue-600", "border-b-2", "border-blue-600"));
-        tab.classList.add("text-blue-600", "border-b-2", "border-blue-600");
+        tabs.forEach(t => t.classList.remove("text-blue-600", "active"));
+        tab.classList.add("text-blue-600", "active");
         contents.forEach(c => c.classList.add("hidden"));
         document.getElementById(tab.dataset.tab).classList.remove("hidden");
       });
@@ -206,8 +241,8 @@
       }
       document.documentElement.setAttribute("lang", lang);
       document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
-      currentSheetID = sheetIDs[lang]; // ✅ يغير الـ Sheet ID
-      loadAllData(); // ✅ يعيد تحميل البيانات
+      currentSheetID = sheetIDs[lang];
+      loadAllData();
     }
 
     langBtn.addEventListener("click", () => {
@@ -298,7 +333,6 @@
   </script>
 </body>
 </html>
-
 
 
 
