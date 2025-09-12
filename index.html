@@ -21,9 +21,7 @@
     body.dark nav { background: #0f172a; }
     body.dark footer { background: #0f172a; color: #cbd5e1; }
     body.dark .tab-btn { color: #cbd5e1; }
-    body.dark .tab-btn.active {
-      color: #38bdf8;
-    }
+    body.dark .tab-btn.active { color: #38bdf8; }
     body.dark .news-card,
     body.dark table {
       background: #1e293b;
@@ -43,6 +41,29 @@
       background: #38bdf8;
       color: #0f172a;
       font-weight: bold;
+    }
+
+    /* ✨ نصوص عامة تكون فاتحة في الوضع الليلي */
+    body.dark, 
+    body.dark h1, 
+    body.dark h2, 
+    body.dark h3, 
+    body.dark h4, 
+    body.dark h5, 
+    body.dark p, 
+    body.dark a, 
+    body.dark button, 
+    body.dark td, 
+    body.dark th, 
+    body.dark label, 
+    body.dark span, 
+    body.dark li {
+      color: #f8fafc !important;
+    }
+
+    /* استثناء للأزرار أو الروابط ذات خلفية بيضاء */
+    body.dark .bg-white {
+      color: #1d4ed8 !important;
     }
 
     /* ✨ Transition Animations بين Light / Dark */
@@ -164,7 +185,6 @@
 
   <!-- Scripts -->
   <script>
-    // ========= Sheet IDs =========
     const sheetIDs = {
       en: "1rhIC3O9J06LEGJElaaXrp9U3k1BTlszALeaw9PZP0vo",
       ar: "1BF9-_-zzHZMBWOdYDRN7-GF9GLPX1DP9iwTD58JTQPo"
@@ -259,7 +279,10 @@
       const res = await fetch(url);
       const text = await res.text();
       const json = JSON.parse(text.substring(47).slice(0, -2));
-      return json.table.rows.map(r => r.c.map(c => c ? c.v : ""));
+
+      return json.table.rows
+        .map(r => r.c.map(c => c ? (c.f ?? c.v ?? "") : ""))
+        .filter(row => row.some(cell => cell !== ""));
     }
 
     function loadAllData() {
@@ -270,7 +293,6 @@
         allNews = rows;
         renderNews(rows);
 
-        // Search filter
         document.getElementById("searchNews").addEventListener("input", e => {
           const q = e.target.value.toLowerCase();
           const filtered = allNews.filter(r => (r[0] + " " + r[1]).toLowerCase().includes(q));
@@ -328,11 +350,10 @@
       .then(() => console.log("Service Worker registered"))
       .catch(err => console.log("SW registration failed:", err));
      }
-  
-
   </script>
 </body>
 </html>
+
 
 
 
