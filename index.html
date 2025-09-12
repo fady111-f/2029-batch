@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cairo University CS Batch 2029</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* 🌙 Dark Mode Styling */
+    body.dark {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #f8fafc;
+    }
+    body.dark nav { background: #0f172a; }
+    body.dark footer { background: #0f172a; color: #cbd5e1; }
+    body.dark .tab-btn { color: #cbd5e1; }
+    body.dark .tab-btn.border-blue-600 {
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+    body.dark .news-card,
+    body.dark table {
+      background: #1e293b;
+      color: #f1f5f9;
+      border: 1px solid #334155;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    body.dark th { background: #334155 !important; color: #f8fafc; }
+    body.dark td { border-color: #475569; }
+    body.dark input {
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid #475569;
+    }
+    body.dark input::placeholder { color: #94a3b8; }
+    body.dark #darkToggle {
+      background: #38bdf8;
+      color: #0f172a;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans transition-colors duration-500">
+
+  <!-- Navbar -->
+  <nav class="bg-blue-600 text-white shadow-lg">
+    <div class="container mx-auto flex justify-between items-center p-4">
+      <h1 id="siteTitle" class="text-2xl font-bold">CS Cairo University - Batch 2029</h1>
+      <div class="flex space-x-2">
+        <button id="langToggle" class="bg-white text-blue-600 px-3 py-1 rounded-lg shadow-md hover:bg-gray-200">🌐 عربي</button>
+        <button id="darkToggle" class="bg-white text-blue-600 px-3 py-1 rounded-lg shadow-md hover:bg-gray-200">🌙 Dark Mode</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20">
+    <div class="container mx-auto text-center">
+      <h2 id="heroTitle" class="text-4xl font-extrabold mb-4">Welcome to Batch 2029 Website</h2>
+      <p id="heroDesc" class="text-lg mb-6">Stay updated with the latest news, schedules, and deadlines of our batch</p>
+      <a href="#news" id="heroBtn" class="bg-white text-blue-700 px-6 py-3 rounded-full font-semibold hover:bg-gray-200 shadow-md transition">Explore Now</a>
+    </div>
+  </section>
+
+  <!-- Tabs -->
+  <div class="container mx-auto mt-10">
+    <div class="flex border-b border-gray-300 justify-center space-x-4">
+      <button class="tab-btn px-4 py-2 text-blue-600 font-semibold border-b-2 border-blue-600" data-tab="news" id="tabNews">News</button>
+      <button class="tab-btn px-4 py-2 text-gray-600 hover:text-blue-600" data-tab="schedule" id="tabSchedule">Today's Schedule</button>
+      <button class="tab-btn px-4 py-2 text-gray-600 hover:text-blue-600" data-tab="deadlines" id="tabDeadlines">Deadlines</button>
+    </div>
+
+    <!-- Content -->
+    <div class="mt-6">
+
+      <!-- News -->
+      <div id="news" class="tab-content">
+        <div class="flex justify-between items-center mb-4">
+          <h2 id="newsTitle" class="text-xl font-bold">📢 Latest News</h2>
+          <input type="text" id="searchNews" placeholder="🔍 Search news..." class="px-3 py-2 border rounded-lg w-1/3">
+        </div>
+        <div id="newsList" class="grid md:grid-cols-2 gap-4"></div>
+      </div>
+
+      <!-- Schedule -->
+      <div id="schedule" class="tab-content hidden">
+        <h2 id="scheduleTitle" class="text-xl font-bold mb-4">📅 Today's Schedule</h2>
+        <table class="min-w-full bg-white shadow-lg rounded-2xl overflow-hidden">
+          <thead class="bg-blue-600 text-white">
+            <tr>
+              <th id="courseTh" class="py-2 px-4 text-center">Course</th>
+              <th id="timeTh" class="py-2 px-4 text-center">Time</th>
+              <th id="locationTh" class="py-2 px-4 text-center">Location</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700 text-center"></tbody>
+        </table>
+      </div>
+
+      <!-- Deadlines -->
+      <div id="deadlines" class="tab-content hidden">
+        <h2 id="deadlinesTitle" class="text-xl font-bold mb-4">⏰ Deadlines</h2>
+        <table class="min-w-full bg-white shadow-lg rounded-2xl overflow-hidden">
+          <thead class="bg-red-600 text-white">
+            <tr>
+              <th id="dCourse" class="py-2 px-4 text-center">Course</th>
+              <th id="dTask" class="py-2 px-4 text-center">Task</th>
+              <th id="dDeadline" class="py-2 px-4 text-center">Deadline</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700 text-center"></tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white mt-16 p-6 text-center">
+    <p id="footerText">© 2025 All Rights Reserved - CS Cairo University Batch 2029</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    // ========= Sheet IDs =========
+    const sheetIDs = {
+      en: "1rhIC3O9J06LEGJElaaXrp9U3k1BTlszALeaw9PZP0vo", // الإنجليزي
+      ar: "1BF9-_-zzHZMBWOdYDRN7-GF9GLPX1DP9iwTD58JTQPo" // العربي
+    };
+
+    let currentLang = "en";
+    let currentSheetID = sheetIDs.en;
+
+    // Tabs
+    const tabs = document.querySelectorAll(".tab-btn");
+    const contents = document.querySelectorAll(".tab-content");
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("text-blue-600", "border-b-2", "border-blue-600"));
+        tab.classList.add("text-blue-600", "border-b-2", "border-blue-600");
+        contents.forEach(c => c.classList.add("hidden"));
+        document.getElementById(tab.dataset.tab).classList.remove("hidden");
+      });
+    });
+
+    // Dark mode
+    document.getElementById("darkToggle").addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+    });
+
+    // Language switch
+    const translations = {
+      en: {
+        siteTitle: "CS Cairo University - Batch 2029",
+        heroTitle: "Welcome to Batch 2029 Website",
+        heroDesc: "Stay updated with the latest news, schedules, and deadlines of our batch",
+        heroBtn: "Explore Now",
+        tabNews: "News",
+        tabSchedule: "Today's Schedule",
+        tabDeadlines: "Deadlines",
+        newsTitle: "📢 Latest News",
+        scheduleTitle: "📅 Today's Schedule",
+        deadlinesTitle: "⏰ Deadlines",
+        courseTh: "Course",
+        timeTh: "Time",
+        locationTh: "Location",
+        dCourse: "Course",
+        dTask: "Task",
+        dDeadline: "Deadline",
+        footerText: "© 2025 All Rights Reserved - CS Cairo University Batch 2029"
+      },
+      ar: {
+        siteTitle: "حاسبات القاهرة - دفعة 2029",
+        heroTitle: "مرحباً بكم في موقع دفعة 2029",
+        heroDesc: "تابع أحدث الأخبار والجداول والمواعيد النهائية الخاصة بالدفعة",
+        heroBtn: "ابدأ الآن",
+        tabNews: "الأخبار",
+        tabSchedule: "جدول اليوم",
+        tabDeadlines: "المواعيد النهائية",
+        newsTitle: "📢 آخر الأخبار",
+        scheduleTitle: "📅 جدول اليوم",
+        deadlinesTitle: "⏰ المواعيد النهائية",
+        courseTh: "المقرر",
+        timeTh: "الوقت",
+        locationTh: "المكان",
+        dCourse: "المقرر",
+        dTask: "المهمة",
+        dDeadline: "الموعد النهائي",
+        footerText: "© 2025 جميع الحقوق محفوظة - حاسبات القاهرة دفعة 2029"
+      }
+    };
+
+    const langBtn = document.getElementById("langToggle");
+
+    function updateLang(lang) {
+      for (let key in translations[lang]) {
+        const el = document.getElementById(key);
+        if (el) el.textContent = translations[lang][key];
+      }
+      document.documentElement.setAttribute("lang", lang);
+      document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
+      currentSheetID = sheetIDs[lang]; // ✅ يغير الـ Sheet ID
+      loadAllData(); // ✅ يعيد تحميل البيانات
+    }
+
+    langBtn.addEventListener("click", () => {
+      currentLang = currentLang === "en" ? "ar" : "en";
+      updateLang(currentLang);
+      langBtn.textContent = currentLang === "en" ? "🌐 عربي" : "🌐 English";
+    });
+
+    updateLang(currentLang);
+
+    // ========= Google Sheets Integration =========
+    async function loadSheet(sheetName) {
+      const url = `https://docs.google.com/spreadsheets/d/${currentSheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
+      const res = await fetch(url);
+      const text = await res.text();
+      const json = JSON.parse(text.substring(47).slice(0, -2));
+      return json.table.rows.map(r => r.c.map(c => c ? c.v : ""));
+    }
+
+    function loadAllData() {
+      // Load News
+      let allNews = [];
+      loadSheet("News").then(rows => {
+        const newsList = document.getElementById("newsList");
+        allNews = rows;
+        renderNews(rows);
+
+        // Search filter
+        document.getElementById("searchNews").addEventListener("input", e => {
+          const q = e.target.value.toLowerCase();
+          const filtered = allNews.filter(r => (r[0] + " " + r[1]).toLowerCase().includes(q));
+          renderNews(filtered);
+        });
+
+        function renderNews(list) {
+          newsList.innerHTML = "";
+          list.forEach(r => {
+            if (r[0]) {
+              const card = document.createElement("div");
+              card.className = "news-card bg-white shadow-lg rounded-2xl p-4";
+              card.innerHTML = `<h3 class="font-semibold">${r[0]}</h3><p class="text-gray-600 mt-2">${r[1]}</p>`;
+              newsList.appendChild(card);
+            }
+          });
+        }
+      });
+
+      // Load Schedule
+      loadSheet("Schedule").then(rows => {
+        const body = document.querySelector("#schedule tbody");
+        body.innerHTML = "";
+        rows.forEach(r => {
+          body.innerHTML += `
+            <tr class="border-b">
+              <td class="py-2 px-4 text-center">${r[0]}</td>
+              <td class="py-2 px-4 text-center">${r[1]}</td>
+              <td class="py-2 px-4 text-center">${r[2]}</td>
+            </tr>
+          `;
+        });
+      });
+
+      // Load Deadlines
+      loadSheet("Deadlines").then(rows => {
+        const body = document.querySelector("#deadlines tbody");
+        body.innerHTML = "";
+        rows.forEach(r => {
+          body.innerHTML += `
+            <tr class="border-b">
+              <td class="py-2 px-4 text-center">${r[0]}</td>
+              <td class="py-2 px-4 text-center">${r[1]}</td>
+              <td class="py-2 px-4 text-center">${r[2]}</td>
+            </tr>
+          `;
+        });
+      });
+    }
+
+    loadAllData();
+  </script>
+</body>
+</html>
