@@ -1,349 +1,340 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1d4ed8">
+  <meta name="theme-color" content="#2563eb">
   <link rel="icon" type="image/png" sizes="192x192" href="logo1.png">
   <link rel="apple-touch-icon" href="logo1.png">
   <title>Cairo University CMP Batch 2029</title>
 
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- AOS CSS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
   <!-- TailwindCSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* 🌙 Dark Mode Styling */
-    body.dark {
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: #f8fafc;
-    }
-    body.dark nav { background: #0f172a; }
-    body.dark footer { background: #0f172a; color: #cbd5e1; }
-    body.dark .tab-btn { color: #cbd5e1; }
-    body.dark .tab-btn.active { color: #38bdf8; }
-    body.dark .news-card,
-    body.dark table {
-      background: #1e293b;
-      color: #f1f5f9;
-      border: 1px solid #334155;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    }
-    body.dark th { background: #334155 !important; color: #f8fafc; }
-    body.dark td { border-color: #475569; }
-    body.dark input {
-      background: #334155;
-      color: #f8fafc;
-      border: 1px solid #475569;
-    }
-    body.dark input::placeholder { color: #94a3b8; }
-    body.dark #darkToggle {
-      background: #38bdf8;
-      color: #0f172a;
-      font-weight: bold;
-    }
-    body.dark tbody td {
-      color: #f8fafc !important;
-    }
-    body.dark, 
-    body.dark h1, 
-    body.dark h2, 
-    body.dark h3, 
-    body.dark h4, 
-    body.dark h5, 
-    body.dark p, 
-    body.dark a, 
-    body.dark button, 
-    body.dark td, 
-    body.dark th, 
-    body.dark label, 
-    body.dark span, 
-    body.dark li {
-      color: #f8fafc !important;
-    }
-    body.dark .bg-white {
-      color: #1d4ed8 !important;
-    }
-    body, nav, footer, .news-card, table, th, td, input {
-      transition: background 0.5s ease, color 0.5s ease, border-color 0.5s ease;
-    }
-    button, a {
-      transition: all 0.3s ease;
-    }
-    button:hover, a:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-    }
-    .tab-btn {
-      position: relative;
-      transition: color 0.3s ease;
-    }
-    .tab-btn::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -2px;
-      width: 0%;
-      height: 2px;
-      background: #2563eb;
-      transition: width 0.3s ease;
-    }
-    .tab-btn:hover::after,
-    .tab-btn.active::after {
-      width: 100%;
-    }
-    .tab-content {
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    .tab-content:not(.hidden) {
-      opacity: 1;
-    }
-  </style>
+  
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-50 font-sans transition-colors duration-500">
+<body class="bg-gray-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 font-sans antialiased transition-colors duration-300 flex flex-col min-h-screen">
+
+  <!-- Scroll Progress -->
+  <div id="scrollProgress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-400 to-indigo-600 z-[100] transition-all duration-150" style="width: 0%"></div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Scroll to top -->
+  <button id="scrollToTopBtn" class="fixed bottom-6 right-6 w-12 h-12 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-full shadow-lg border border-gray-200 dark:border-slate-700 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:-translate-y-1 transition-all z-[60] opacity-0 pointer-events-none cursor-pointer">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+  </button>
+
+  <!-- AI Chat Widget -->
+  <button id="chatToggleBtn" class="fixed bottom-6 left-6 w-14 h-14 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform z-[60] group cursor-pointer border-4 border-white/20">
+    <svg class="w-7 h-7 group-hover:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+    <span class="hidden group-hover:block text-2xl">🤖</span>
+  </button>
+
+  <div id="chatWindow" class="fixed bottom-24 left-6 w-80 sm:w-96 max-w-[calc(100vw-3rem)] glass bg-white/90 dark:bg-slate-800/90 rounded-2xl shadow-2xl z-[60] overflow-hidden flex flex-col transition-all duration-300 opacity-0 translate-y-4 pointer-events-none">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white flex justify-between items-center shadow-md">
+      <div class="flex items-center gap-2">
+         <span class="text-2xl bg-white/20 p-1 rounded-full leading-none">🤖</span>
+         <div>
+             <h3 class="font-bold leading-tight">AI Assistant</h3>
+             <p class="text-xs text-blue-100 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-400 inline-block animate-pulse"></span> Online</p>
+         </div>
+      </div>
+      <button id="closeChatBtn" class="hover:bg-white/20 p-1.5 rounded-lg transition-colors cursor-pointer">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    <!-- Body -->
+    <div id="chatMessages" class="p-4 h-80 overflow-y-auto flex flex-col gap-3 scroll-smooth">
+      <div class="self-start bg-gray-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 px-4 py-2.5 rounded-2xl rounded-tl-sm text-sm max-w-[85%] shadow-sm">
+        Hello! I'm the CMP 2029 AI Assistant. Ask me anything about schedules, deadlines, or general batch info!
+      </div>
+    </div>
+    <!-- Input -->
+    <form id="chatForm" class="p-3 border-t border-gray-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 flex gap-2">
+      <input type="text" id="chatInput" placeholder="Message AI..." class="flex-grow bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none text-slate-800 dark:text-slate-200 shadow-inner" required autocomplete="off">
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl transition-colors shadow-md flex items-center justify-center cursor-pointer">
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </form>
+  </div>
 
   <!-- ✅ Navbar -->
-  <nav class="bg-blue-600 text-white shadow-lg">
-    <div class="container mx-auto flex flex-col sm:flex-row sm:justify-between sm:items-center p-4 space-y-2 sm:space-y-0">
-      <h1 id="siteTitle" class="text-xl sm:text-2xl font-bold text-center sm:text-left">
-        CMP Cairo University - Batch 2029
-      </h1>
-      <div class="flex flex-wrap justify-center sm:justify-end gap-2">
-        <button id="contactBtn" class="bg-white text-blue-600 px-3 py-1 rounded-lg shadow-md">📩 Contact</button>
-        <button id="langToggle" class="bg-white text-blue-600 px-3 py-1 rounded-lg shadow-md">🌐 عربي</button>
-        <button id="darkToggle" class="bg-white text-blue-600 px-3 py-1 rounded-lg shadow-md">🌙 Dark Mode</button>
+  <nav class="sticky top-0 z-50 glass shadow-sm transition-all duration-300">
+    <div class="container mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <img src="logo1.png" alt="Logo" class="w-10 h-10 object-contain drop-shadow-md rounded-full bg-white p-1 hidden sm:block hover:rotate-12 transition-transform">
+        <h1 id="siteTitle" class="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 tracking-tight">
+          CMP Batch 2029
+        </h1>
+      </div>
+      <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
+        <button id="contactBtn" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-white/80 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0">
+          <span>📩</span> <span class="hidden sm:inline">Contact</span>
+        </button>
+        <button id="adminBtn" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-amber-100/90 dark:bg-amber-500/15 border border-amber-200 dark:border-amber-400 text-amber-800 dark:text-amber-200 shadow-sm hover:bg-amber-200 dark:hover:bg-amber-500/30 transition-all hover:-translate-y-0.5 active:translate-y-0">
+          <span>⚙️</span> <span class="hidden sm:inline">Admin</span>
+        </button>
+        <button id="langToggle" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-white/80 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 shadow-sm transition-all hover:-translate-y-0.5 active:translate-y-0">
+          <span>🌐</span> عربي
+        </button>
+        <button id="darkToggle" class="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium bg-slate-800 dark:bg-white text-white dark:text-slate-900 shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5 active:translate-y-0">
+          <span>🌙</span> <span class="hidden sm:inline">Dark</span>
+        </button>
       </div>
     </div>
   </nav>
 
+  <!-- Contact Modal -->
+  <div id="contactModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 items-center justify-center px-4 py-6">
+    <div id="contactModalInner" class="max-w-xl w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
+      <div class="flex justify-between items-center p-5 border-b border-gray-200 dark:border-slate-700">
+        <div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Get in Touch</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Send a quick message and I will reply as soon as possible.</p>
+        </div>
+        <button id="closeContactIcon" class="text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">✕</button>
+      </div>
+      <form id="contactFormModal" class="p-6 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
+          <input id="contactName" type="text" class="mt-2 w-full rounded-2xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Your name">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Email</label>
+          <input id="contactEmail" type="email" class="mt-2 w-full rounded-2xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="you@example.com">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Message</label>
+          <textarea id="contactMessage" rows="4" class="mt-2 w-full rounded-2xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Write your message..."></textarea>
+        </div>
+        <div class="flex justify-end gap-3">
+          <button type="button" onclick="closeModal()" class="px-5 py-3 rounded-2xl bg-gray-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-gray-200 transition">Cancel</button>
+          <button type="submit" class="px-5 py-3 rounded-2xl bg-blue-600 text-white hover:bg-blue-700 transition">Send Message</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Modal -->
+  <div id="adminModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 items-center justify-center px-4 py-6">
+    <div id="adminModalInner" class="max-w-2xl w-full bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden transform scale-95 opacity-0 transition-all duration-300">
+      <div class="flex justify-between items-center p-5 border-b border-gray-200 dark:border-slate-700">
+        <div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Admin Panel</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400">Add manual news, schedule items, or deadlines for today.</p>
+        </div>
+        <button id="closeAdminIcon" class="text-slate-500 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">✕</button>
+      </div>
+      <form id="adminForm" class="p-6 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Entry type</label>
+          <select id="adminType" class="mt-2 w-full rounded-2xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500">
+            <option value="news">News</option>
+            <option value="schedule">Schedule</option>
+            <option value="deadline">Deadline</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Title / Course</label>
+          <input id="adminPrimary" type="text" class="mt-2 w-full rounded-2xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="News title or course name" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Description / Time</label>
+          <input id="adminSecondary" type="text" class="mt-2 w-full rounded-2xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="News details or class time" required>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Location / Deadline</label>
+          <input id="adminTertiary" type="text" class="mt-2 w-full rounded-2xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="Location or deadline info" required>
+        </div>
+        <div class="flex justify-end gap-3">
+          <button type="button" onclick="closeAdminModal()" class="px-5 py-3 rounded-2xl bg-gray-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-gray-200 transition">Cancel</button>
+          <button type="submit" class="px-5 py-3 rounded-2xl bg-amber-500 text-white hover:bg-amber-600 transition">Save Entry</button>
+        </div>
+        <div class="mt-6 border-t border-gray-200 dark:border-slate-700 pt-5 px-6 pb-6">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-sm font-semibold text-slate-900 dark:text-white">Saved Admin Entries</p>
+            <button type="button" id="clearAdminEntriesBtn" class="text-xs font-semibold text-red-600 dark:text-red-400 hover:underline">Clear all</button>
+          </div>
+          <div id="adminEntryList" class="max-h-48 overflow-y-auto space-y-3 text-sm text-slate-600 dark:text-slate-300">
+            <p class="text-xs text-slate-500 dark:text-slate-400">No saved entries yet. Add one to see it live in the tabs.</p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ✅ Hero Section -->
-  <section class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16 sm:py-20 px-4">
-    <div class="container mx-auto text-center">
-      <h2 id="heroTitle" class="text-2xl sm:text-4xl font-extrabold mb-4">
-        Welcome to CMP Batch 2029 Website
+  <section class="relative overflow-hidden hero-bg text-white py-24 sm:py-32 px-4 shadow-inner">
+    <!-- Floating Abstract Shapes -->
+    <div class="shape-blob bg-blue-400 w-64 h-64 rounded-full top-[-10%] left-[-10%] animate-float"></div>
+    <div class="shape-blob bg-indigo-500 w-80 h-80 rounded-full bottom-[-20%] right-[-10%] animate-float-delayed"></div>
+    
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIvPjwvc3ZnPg==')] opacity-40"></div>
+    
+    <div class="container mx-auto text-center relative z-10" data-aos="zoom-in" data-aos-duration="1000">
+      <div class="inline-block px-4 py-1.5 mb-6 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-sm font-medium tracking-wide shadow-sm hover:scale-105 transition-transform cursor-default">
+        🎓 Cairo University
+      </div>
+      <h2 id="heroTitle" class="text-4xl sm:text-7xl font-extrabold mb-6 tracking-tight drop-shadow-xl leading-tight">
+        Welcome to CMP <br class="hidden sm:block">Batch 2029
       </h2>
-      <p id="heroDesc" class="text-base sm:text-lg mb-6">
-        Stay updated with the latest news, schedules, and deadlines of our batch
+      <p id="heroDesc" class="text-lg sm:text-2xl mb-10 text-blue-50 max-w-2xl mx-auto font-light drop-shadow">
+        Your central hub for the latest news, schedules, and important deadlines. Stay connected and ahead.
       </p>
-      <a href="#news" id="heroBtn" class="bg-white text-blue-700 px-6 py-3 rounded-full font-semibold shadow-md transition">Explore Now</a>
+      <a href="#main-content" id="heroBtn" class="inline-flex items-center gap-3 bg-white text-blue-700 px-8 py-4 rounded-full font-bold shadow-xl hover:shadow-2xl hover:bg-blue-50 transition-all hover:-translate-y-2 active:translate-y-0 text-lg">
+        Explore Now
+        <svg class="w-6 h-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+      </a>
     </div>
   </section>
 
-  <!-- ✅ Tabs -->
-  <div class="container mx-auto mt-10 px-4">
-    <div class="flex flex-wrap border-b border-gray-300 justify-center gap-2">
-      <button class="tab-btn active px-4 py-2 text-blue-600 font-semibold" data-tab="news" id="tabNews">News</button>
-      <button class="tab-btn px-4 py-2 text-gray-600 hover:text-blue-600" data-tab="schedule" id="tabSchedule">Today's Schedule</button>
-      <button class="tab-btn px-4 py-2 text-gray-600 hover:text-blue-600" data-tab="deadlines" id="tabDeadlines">Deadlines</button>
-    </div>
-
-    <!-- ✅ News -->
-    <div id="news" class="tab-content">
-      <div class="flex justify-between items-center mb-4 mt-6 flex-col sm:flex-row gap-2">
-        <h2 id="newsTitle" class="text-xl font-bold">📢 Latest News</h2>
-        <input type="text" id="searchNews" placeholder="🔍 Search news..." class="px-3 py-2 border rounded-lg w-full sm:w-1/3">
+  <!-- ✅ Main Content -->
+  <main id="main-content" class="container mx-auto mt-16 mb-24 px-4 flex-grow">
+    
+    <!-- ✅ Modern Tabs -->
+    <div class="flex justify-center mb-12" data-aos="fade-up">
+      <div class="inline-flex p-1.5 bg-gray-200/60 dark:bg-slate-800/60 rounded-full shadow-inner backdrop-blur-sm border border-gray-200 dark:border-slate-700">
+        <button class="tab-btn active relative px-6 py-2.5 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 text-blue-700 bg-white shadow-sm dark:bg-slate-700 dark:text-blue-300" data-tab="news" id="tabNews">News</button>
+        <button class="tab-btn relative px-6 py-2.5 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-300" data-tab="schedule" id="tabSchedule">Schedule</button>
+        <button class="tab-btn relative px-6 py-2.5 rounded-full text-sm sm:text-base font-semibold transition-all duration-300 text-gray-600 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-300" data-tab="deadlines" id="tabDeadlines">Deadlines</button>
       </div>
-      <div id="newsList" class="grid md:grid-cols-2 gap-4"></div>
     </div>
 
-    <!-- ✅ Schedule -->
-    <div id="schedule" class="tab-content hidden mt-6">
-      <h2 id="scheduleTitle" class="text-xl font-bold mb-4">📅 Today's Schedule</h2>
-      <div class="overflow-x-auto">
-        <table class="min-w-full bg-white shadow-lg rounded-2xl overflow-hidden">
-          <thead class="bg-blue-600 text-white">
-            <tr>
-              <th id="courseTh" class="py-2 px-4 text-center">Course</th>
-              <th id="timeTh" class="py-2 px-4 text-center">Time</th>
-              <th id="locationTh" class="py-2 px-4 text-center">Location</th>
+    <!-- ✅ News Tab -->
+    <div id="news" class="tab-content active">
+      <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4" data-aos="fade-right">
+        <h2 id="newsTitle" class="text-3xl font-bold flex items-center gap-3 tracking-tight">
+          <span class="p-2.5 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl shadow-sm">📢</span> 
+          Latest News
+        </h2>
+        <div class="relative w-full sm:w-80 group">
+          <input type="text" id="searchNews" placeholder="Search news..." class="w-full pl-11 pr-4 py-3 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder-gray-400 dark:placeholder-slate-500 group-hover:shadow-md">
+          <svg class="w-5 h-5 absolute left-4 top-3.5 text-gray-400 transition-colors group-focus-within:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+      </div>
+      
+      <!-- Skeletons -->
+      <div id="newsLoading" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="animate-pulse bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700">
+          <div class="h-7 bg-gray-200 dark:bg-slate-700 rounded-md w-3/4 mb-5"></div>
+          <div class="h-4 bg-gray-100 dark:bg-slate-700/50 rounded w-full mb-3"></div>
+          <div class="h-4 bg-gray-100 dark:bg-slate-700/50 rounded w-5/6"></div>
+        </div>
+        <div class="animate-pulse bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700 hidden md:block">
+          <div class="h-7 bg-gray-200 dark:bg-slate-700 rounded-md w-2/3 mb-5"></div>
+          <div class="h-4 bg-gray-100 dark:bg-slate-700/50 rounded w-full mb-3"></div>
+          <div class="h-4 bg-gray-100 dark:bg-slate-700/50 rounded w-4/5"></div>
+        </div>
+        <div class="animate-pulse bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700 hidden lg:block">
+          <div class="h-7 bg-gray-200 dark:bg-slate-700 rounded-md w-3/4 mb-5"></div>
+          <div class="h-4 bg-gray-100 dark:bg-slate-700/50 rounded w-full mb-3"></div>
+          <div class="h-4 bg-gray-100 dark:bg-slate-700/50 rounded w-1/2"></div>
+        </div>
+      </div>
+      
+      <div id="newsList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"></div>
+      <div id="noNewsFound" class="hidden text-center py-16 bg-gray-50 dark:bg-slate-800/50 rounded-3xl border border-dashed border-gray-300 dark:border-slate-700 text-gray-500 dark:text-gray-400">
+        <span class="text-4xl block mb-4">🔍</span>
+        No news matches your search.
+      </div>
+    </div>
+
+    <!-- ✅ Schedule Tab -->
+    <div id="schedule" class="tab-content">
+      <h2 id="scheduleTitle" class="text-3xl font-bold mb-8 flex items-center gap-3 tracking-tight" data-aos="fade-right">
+        <span class="p-2.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-xl shadow-sm">📅</span>
+        Today's Schedule
+      </h2>
+      <div class="overflow-x-auto rounded-3xl border border-gray-200 dark:border-slate-700 shadow-md bg-white dark:bg-slate-800" data-aos="fade-up">
+        <table class="min-w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-50 dark:bg-slate-850/80 border-b border-gray-200 dark:border-slate-700">
+              <th id="courseTh" class="py-5 px-8 font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider text-sm">Course</th>
+              <th id="timeTh" class="py-5 px-8 font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider text-sm">Time</th>
+              <th id="locationTh" class="py-5 px-8 font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider text-sm">Location</th>
             </tr>
           </thead>
-          <tbody class="text-gray-700 text-center"></tbody>
+          <tbody id="scheduleBody" class="divide-y divide-gray-100 dark:divide-slate-700/50 text-gray-600 dark:text-gray-400">
+            <!-- Loading -->
+            <tr class="animate-pulse" id="scheduleLoading">
+              <td class="py-5 px-8"><div class="h-5 bg-gray-200 dark:bg-slate-700 rounded w-3/4"></div></td>
+              <td class="py-5 px-8"><div class="h-5 bg-gray-200 dark:bg-slate-700 rounded w-1/2"></div></td>
+              <td class="py-5 px-8"><div class="h-5 bg-gray-200 dark:bg-slate-700 rounded w-2/3"></div></td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
 
-    <!-- ✅ Deadlines -->
-    <div id="deadlines" class="tab-content hidden mt-6">
-      <h2 id="deadlinesTitle" class="text-xl font-bold mb-4">⏰ Deadlines</h2>
-      <div class="overflow-x-auto">
-        <table class="min-w-full bg-white shadow-lg rounded-2xl overflow-hidden">
-          <thead class="bg-red-600 text-white">
-            <tr>
-              <th id="dCourse" class="py-2 px-4 text-center">Course</th>
-              <th id="dTask" class="py-2 px-4 text-center">Task</th>
-              <th id="dDeadline" class="py-2 px-4 text-center">Deadline</th>
+    <!-- ✅ Deadlines Tab -->
+    <div id="deadlines" class="tab-content">
+      <h2 id="deadlinesTitle" class="text-3xl font-bold mb-8 flex items-center gap-3 tracking-tight" data-aos="fade-right">
+        <span class="p-2.5 bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 rounded-xl shadow-sm">⏰</span>
+        Deadlines
+      </h2>
+      <div class="overflow-x-auto rounded-3xl border border-gray-200 dark:border-slate-700 shadow-md bg-white dark:bg-slate-800" data-aos="fade-up">
+        <table class="min-w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-50 dark:bg-slate-850/80 border-b border-gray-200 dark:border-slate-700">
+              <th id="dCourse" class="py-5 px-8 font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider text-sm">Course</th>
+              <th id="dTask" class="py-5 px-8 font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider text-sm">Task</th>
+              <th id="dDeadline" class="py-5 px-8 font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider text-sm">Deadline</th>
             </tr>
           </thead>
-          <tbody class="text-gray-700 text-center"></tbody>
+          <tbody id="deadlinesBody" class="divide-y divide-gray-100 dark:divide-slate-700/50 text-gray-600 dark:text-gray-400">
+            <!-- Loading -->
+            <tr class="animate-pulse" id="deadlinesLoading">
+              <td class="py-5 px-8"><div class="h-5 bg-gray-200 dark:bg-slate-700 rounded w-3/4"></div></td>
+              <td class="py-5 px-8"><div class="h-5 bg-gray-200 dark:bg-slate-700 rounded w-5/6"></div></td>
+              <td class="py-5 px-8"><div class="h-5 bg-gray-200 dark:bg-slate-700 rounded w-1/2"></div></td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </div>
-  </div>
+  </main>
 
-  <!-- ✅ Footer -->
-  <footer class="bg-gray-800 text-white mt-16 p-6 text-center">
-    <p id="footerText"> Batch 2029 - Fady Fawzy</p>
+  <!-- ✅ Enhanced Footer -->
+  <footer class="border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 pt-16 pb-8 mt-auto">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-8 mb-12 text-center md:text-left">
+         <div>
+            <h3 class="text-xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">CMP Batch 2029</h3>
+            <p class="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Official hub for Cairo University Computer Engineering batch 2029. Stay updated with ease.</p>
+         </div>
+         <div>
+            <h3 class="text-lg font-bold mb-4 text-gray-800 dark:text-white">Quick Links</h3>
+            <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+               <li><a href="#" class="hover:text-blue-600 transition-colors">Faculty Website</a></li>
+               <li><a href="#" class="hover:text-blue-600 transition-colors">Student Portal</a></li>
+            </ul>
+         </div>
+         <div>
+            <h3 class="text-lg font-bold mb-4 text-gray-800 dark:text-white">Need help?</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Use the chat button or the contact form to get quick updates and support from the batch team.</p>
+         </div>
+      </div>
+      <div class="text-center text-sm text-gray-500 dark:text-gray-400">
+         © 2025 All Rights Reserved - Batch 2029 - Fady Fawzy
+      </div>
+    </div>
   </footer>
 
-  <!-- ✅ Contact Modal -->
-  <div id="contactModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 w-80 text-center">
-      <h2 class="text-xl font-bold mb-4 dark:text-white">📩 Contact Owner</h2>
-      <p class="mb-2 text-gray-700 dark:text-gray-300">
-        <strong>Email:</strong><br>
-        <a href="mailto:fady.fawzy2006@gmail.com" class="text-blue-600 underline">fady.fawzy2006@gmail.com</a>
-      </p>
-      <p class="mb-4 text-gray-700 dark:text-gray-300">
-        <strong>Phone:</strong><br>
-        <a href="tel:01204788242" class="text-blue-600 underline">01204788242</a>
-      </p>
-      <button id="closeContact" class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700">Close</button>
-    </div>
-  </div>
-
-  <!-- ✅ Scripts -->
-  <script>
-    const sheetIDs = {
-      en: "1rhIC3O9J06LEGJElaaXrp9U3k1BTlszALeaw9PZP0vo",
-      ar: "1BF9-_-zzHZMBWOdYDRN7-GF9GLPX1DP9iwTD58JTQPo"
-    };
-
-    let currentLang = "en";
-    let currentSheetID = sheetIDs.en;
-
-    // Tabs
-    const tabs = document.querySelectorAll(".tab-btn");
-    const contents = document.querySelectorAll(".tab-content");
-    tabs.forEach(tab => {
-      tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("text-blue-600", "active"));
-        tab.classList.add("text-blue-600", "active");
-        contents.forEach(c => c.classList.add("hidden"));
-        document.getElementById(tab.dataset.tab).classList.remove("hidden");
-      });
-    });
-
-    // Dark mode
-    const darkBtn = document.getElementById("darkToggle");
-    if (localStorage.getItem("theme") === "dark") {
-      document.body.classList.add("dark");
-      darkBtn.textContent = "☀️ Light Mode";
-    }
-    darkBtn.addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-      const isDark = document.body.classList.contains("dark");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-      darkBtn.textContent = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
-    });
-
-    // Contact modal
-    const contactBtn = document.getElementById("contactBtn");
-    const contactModal = document.getElementById("contactModal");
-    const closeContact = document.getElementById("closeContact");
-    contactBtn.addEventListener("click", () => {
-      contactModal.classList.remove("hidden");
-      contactModal.classList.add("flex");
-    });
-    closeContact.addEventListener("click", () => {
-      contactModal.classList.add("hidden");
-      contactModal.classList.remove("flex");
-    });
-    contactModal.addEventListener("click", (e) => {
-      if (e.target === contactModal) {
-        contactModal.classList.add("hidden");
-        contactModal.classList.remove("flex");
-      }
-    });
-
-    // Language switch
-    const translations = {
-      en: { siteTitle:"CMP Cairo University - Batch 2029", heroTitle:"Welcome to Batch 2029 Website", heroDesc:"Stay updated with the latest news, schedules, and deadlines of our batch", heroBtn:"Explore Now", tabNews:"News", tabSchedule:"Today's Schedule", tabDeadlines:"Deadlines", newsTitle:"📢 Latest News", scheduleTitle:"📅 Today's Schedule", deadlinesTitle:"⏰ Deadlines", courseTh:"Course", timeTh:"Time", locationTh:"Location", dCourse:"Course", dTask:"Task", dDeadline:"Deadline", footerText:"© 2025 All Rights Reserved -  Batch 2029 - Fady Fawzy" },
-      ar: { siteTitle:"حاسبات القاهرة - دفعة 2029", heroTitle:"مرحباً بكم في موقع دفعة 2029", heroDesc:"تابع أحدث الأخبار والجداول والمواعيد النهائية الخاصة بالدفعة", heroBtn:"ابدأ الآن", tabNews:"الأخبار", tabSchedule:"جدول اليوم", tabDeadlines:"المواعيد النهائية", newsTitle:"📢 آخر الأخبار", scheduleTitle:"📅 جدول اليوم", deadlinesTitle:"⏰ المواعيد النهائية", courseTh:"المقرر", timeTh:"الوقت", locationTh:"المكان", dCourse:"المقرر", dTask:"المهمة", dDeadline:"الموعد النهائي", footerText:"© 2025 جميع الحقوق محفوظة -  دفعة 2029 - فادي فوزي " }
-    };
-    const langBtn = document.getElementById("langToggle");
-    function updateLang(lang) {
-      for (let key in translations[lang]) {
-        const el = document.getElementById(key);
-        if (el) el.textContent = translations[lang][key];
-      }
-      document.documentElement.setAttribute("lang", lang);
-      document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr");
-      currentSheetID = sheetIDs[lang];
-      loadAllData();
-    }
-    langBtn.addEventListener("click", () => {
-      currentLang = currentLang === "en" ? "ar" : "en";
-      updateLang(currentLang);
-      langBtn.textContent = currentLang === "en" ? "🌐 عربي" : "🌐 English";
-    });
-    updateLang(currentLang);
-
-    // Load data from Google Sheets
-    async function loadSheet(sheetName) {
-      const url = `https://docs.google.com/spreadsheets/d/${currentSheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
-      const res = await fetch(url);
-      const text = await res.text();
-      const json = JSON.parse(text.substring(47).slice(0, -2));
-      return json.table.rows.map(r => r.c.map(c => c ? (c.f ?? c.v ?? "") : ""));
-    }
-    function loadAllData() {
-      loadSheet("News").then(rows => {
-        const newsList = document.getElementById("newsList");
-        let allNews = rows;
-        renderNews(rows);
-        document.getElementById("searchNews").addEventListener("input", e => {
-          const q = e.target.value.toLowerCase();
-          const filtered = allNews.filter(r => (r[0] + " " + r[1]).toLowerCase().includes(q));
-          renderNews(filtered);
-        });
-        function renderNews(list) {
-          newsList.innerHTML = "";
-          list.forEach(r => {
-            if (r[0]) {
-              const card = document.createElement("div");
-              card.className = "news-card bg-white shadow-lg rounded-2xl p-4";
-              card.innerHTML = `<h3 class="font-semibold">${r[0]}</h3><p class="text-gray-600 mt-2">${r[1]}</p>`;
-              newsList.appendChild(card);
-            }
-          });
-        }
-      });
-      loadSheet("Schedule").then(rows => {
-        const body = document.querySelector("#schedule tbody");
-        body.innerHTML = "";
-        rows.forEach(r => {
-          body.innerHTML += `<tr class="border-b">
-            <td class="py-2 px-4 text-center">${r[0]}</td>
-            <td class="py-2 px-4 text-center">${r[1]}</td>
-            <td class="py-2 px-4 text-center">${r[2]}</td></tr>`;
-        });
-      });
-      loadSheet("Deadlines").then(rows => {
-        const body = document.querySelector("#deadlines tbody");
-        body.innerHTML = "";
-        rows.forEach(r => {
-          body.innerHTML += `<tr class="border-b">
-            <td class="py-2 px-4 text-center">${r[0]}</td>
-            <td class="py-2 px-4 text-center">${r[1]}</td>
-            <td class="py-2 px-4 text-center">${r[2]}</td></tr>`;
-        });
-      });
-    }
-    loadAllData();
-
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js")
-        .then(() => console.log("Service Worker registered"))
-        .catch(err => console.log("SW registration failed:", err));
-    }
-  </script>
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
