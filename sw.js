@@ -1,11 +1,14 @@
 // Service Worker for offline support (improved)
-const CACHE_NAME = 'cmp2029-v1';
+const CACHE_NAME = 'cmp2029-v4';
 const PRECACHE_URLS = [
   './',
   './index.html',
   './offline.html',
   './logo1.png',
-  './manifest.json'
+  './manifest.json',
+  './openai-config.js',
+  './styles.css',
+  './app.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -28,30 +31,60 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+function networkFirst(request) {
+  return fetch(request)
+    .then((response) => {
+      if (response && response.status === 200 && response.type === 'basic') {
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+      }
+      return response;
+    })
+    .catch(() => caches.match(request));
+}
+
+function cacheFirst(request) {
+  return caches.match(request).then((cached) => {
+    if (cached) return cached;
+    return fetch(request).then((response) => {
+      if (response && response.status === 200 && response.type === 'basic') {
+        const respClone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, respClone));
+      }
+      return response;
+    });
+  });
+}
+
 self.addEventListener('fetch', (event) => {
-  // For navigation requests, try network then fallback to offline page
-  if (event.request.mode === 'navigate') {
+  const { request } = event;
+
+  if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match('./offline.html'))
+      fetch(request)
+        .then((response) => {
+          if (response && response.ok) {
+            const responseClone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+          }
+          return response;
+        })
+        .catch(() => caches.match('./offline.html'))
     );
     return;
   }
 
-  // For other requests, use cache-first then network
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        // Optionally cache fetched assets
-        if (response && response.status === 200 && response.type === 'basic') {
-          const respClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, respClone));
-        }
-        return response;
-      }).catch(() => {
-        // If request is for an image, return a transparent 1x1 placeholder (optional)
-        if (event.request.destination === 'image') return new Response('', { status: 404 });
-      });
-    })
-  );
+  const shouldNetworkFirst = request.destination === 'document'
+    || request.destination === 'script'
+    || request.destination === 'style'
+    || request.destination === ''
+    || request.url.endsWith('.html')
+    || request.url.endsWith('.js')
+    || request.url.endsWith('.css');
+
+  if (shouldNetworkFirst) {
+    event.respondWith(networkFirst(request));
+  } else {
+    event.respondWith(cacheFirst(request));
+  }
 });
